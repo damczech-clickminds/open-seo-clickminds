@@ -10,6 +10,9 @@ by upstream is claimed. See [NOTICE](NOTICE) for attribution and
 [the ClickMinds maintenance guide](docs/maintainers/CLICKMINDS.md) for updates,
 instance builds, backups, and rollback.
 
+For local Codex/MCP work, bounded context, project isolation and reviewed learning,
+see [ClickMinds agent work](docs/maintainers/CLICKMINDS_AGENT_WORK.md).
+
 ---
 
 # OpenSEO

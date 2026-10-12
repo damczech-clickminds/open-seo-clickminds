@@ -10,6 +10,8 @@ import * as sqliteProjectContext from "./project-context.schema";
 import * as sqliteReports from "./reports.schema";
 import * as sqliteReportTemplates from "./report-templates.schema";
 import * as sqliteAudit from "./audit.schema";
+import * as sqliteAgentWork from "./agent-work.schema";
+import * as pgAgentWork from "./pg/agent-work.schema";
 import * as sqliteSam from "./sam.schema";
 import * as sqliteAuth from "./better-auth-schema";
 import * as sqliteBilling from "./billing.schema";
@@ -157,6 +159,7 @@ const sqliteAppTables = tablesFrom(
   sqliteReportTemplates,
   sqliteAudit,
   sqliteSam,
+  sqliteAgentWork,
   sqliteBilling,
   sqliteGa4,
   sqliteGsc,
@@ -170,6 +173,7 @@ const pgAppTables = tablesFrom(
   pgReportTemplates,
   pgAudit,
   pgSam,
+  pgAgentWork,
   pgBilling,
   pgGa4,
   pgGsc,

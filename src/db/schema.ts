@@ -4,6 +4,8 @@ import * as sqliteProjectContext from "./project-context.schema";
 import * as sqliteReports from "./reports.schema";
 import * as sqliteReportTemplates from "./report-templates.schema";
 import * as sqliteAudit from "./audit.schema";
+import * as sqliteAgentWork from "./agent-work.schema";
+import * as pgAgentWork from "./pg/agent-work.schema";
 import * as sqliteSam from "./sam.schema";
 import * as sqliteAuth from "./better-auth-schema";
 import * as sqliteBilling from "./billing.schema";
@@ -40,6 +42,7 @@ type AppSchema = typeof sqliteApp &
   typeof sqliteReportTemplates &
   typeof sqliteAudit &
   typeof sqliteSam &
+  typeof sqliteAgentWork &
   typeof sqliteAuth &
   typeof sqliteBilling &
   typeof sqliteGa4 &
@@ -56,6 +59,7 @@ const runtimeSchema =
         ...pgReportTemplates,
         ...pgAudit,
         ...pgSam,
+        ...pgAgentWork,
         ...pgAuth,
         ...pgBilling,
         ...pgGa4,
@@ -70,6 +74,7 @@ const runtimeSchema =
         ...sqliteReportTemplates,
         ...sqliteAudit,
         ...sqliteSam,
+        ...sqliteAgentWork,
         ...sqliteAuth,
         ...sqliteBilling,
         ...sqliteGa4,
@@ -109,6 +114,10 @@ export const {
   auditIssues,
   auditLighthouseResults,
   samSessions,
+  agentWorkRuns,
+  agentWorkEvidence,
+  agentPatternCandidates,
+  agentLearningPatterns,
   user,
   session,
   account,

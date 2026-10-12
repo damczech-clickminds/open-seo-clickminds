@@ -1,3 +1,4 @@
+import { readSamBudget } from "@/server/features/sam/samBudget";
 import { Think } from "@cloudflare/think";
 import type {
   ChatErrorContext,
@@ -191,7 +192,7 @@ export class SamChatAgent extends Think {
   }
 
   getModel() {
-    return this.buildModel("max");
+    return this.buildModel(readSamBudget(this.env).reasoningEffort);
   }
 
   private buildModel(reasoningEffort: "max" | "low") {
@@ -381,16 +382,9 @@ export class SamChatAgent extends Think {
 
       return {
         tools: buildSamMcpTools(authContext, ctx.project, turn.turnId),
-        // SAM runs complex multi-step work in one turn (site-read intake plus
-        // a full research chain, multi-competitor sweeps), so the step budget
-        // is generous; cost is bounded by per-step metering and the model
-        // stopping on its own. The per-step token budget is shared by
-        // max-effort reasoning and the visible reply, so it stays well above
-        // measured reasoning use (~3k tokens — a tight cap lets reasoning eat
-        // the reply, issue #161) but below the 32k that, with 48 steps, let a
-        // single turn outgrow the Durable Object memory limit.
-        maxSteps: 40,
-        maxOutputTokens: 16_000,
+        // Self-host uses a smaller loop by default; trusted config can raise it.
+        // Reasoning and visible reply share the per-step output budget.
+        ...readSamBudget(this.env, hosted).turnLimits,
       };
     });
   }

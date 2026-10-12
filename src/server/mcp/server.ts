@@ -1,4 +1,12 @@
 import {
+  startAgentWorkTool,
+  getAgentWorkContextTool,
+  listAgentWorkTool,
+  checkpointAgentWorkTool,
+  compareOrganicPeriodsTool,
+  proposeLearningPatternTool,
+} from "@/server/mcp/tools/agent-work-tools";
+import {
   getAiVisibilityTrackerTool,
   generateAiVisibilityPromptsTool,
   researchAiVisibilityPromptsTool,
@@ -201,6 +209,13 @@ export function createOpenSeoMcpServer(authProps: McpProps) {
   ) => registerOpenSeoTool(server, tool, authProps);
 
   register(whoamiTool);
+  register(startAgentWorkTool);
+  register(getAgentWorkContextTool);
+  register(listAgentWorkTool);
+  register(checkpointAgentWorkTool);
+  register(compareOrganicPeriodsTool);
+  register(proposeLearningPatternTool);
+
   register(listProjectsTool);
   register(createProjectTool);
   register(researchProjectWebsiteTool);
