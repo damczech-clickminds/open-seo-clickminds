@@ -1,3 +1,17 @@
+# OpenSEO — ClickMinds.dm edition
+
+Maintained by **ClickMinds.dm**. This independent downstream edition is based on
+[every-app/open-seo](https://github.com/every-app/open-seo).
+
+The original OpenSEO core remains copyright © 2026 Ben Senescu and its respective
+contributors, under the [MIT license](LICENSE). ClickMinds.dm maintains this
+edition and its original additions; no ownership of upstream code or endorsement
+by upstream is claimed. See [NOTICE](NOTICE) for attribution and
+[the ClickMinds maintenance guide](docs/maintainers/CLICKMINDS.md) for updates,
+instance builds, backups, and rollback.
+
+---
+
 # OpenSEO
 
 > Open source alternative to Semrush and Ahrefs

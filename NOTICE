@@ -1,0 +1,17 @@
+OpenSEO — ClickMinds.dm edition
+
+Upstream: https://github.com/every-app/open-seo
+Original core: Copyright (c) 2026 Ben Senescu
+Upstream contributors retain rights in their respective contributions.
+License for upstream code: MIT; see the unmodified LICENSE file.
+
+Downstream maintainer: ClickMinds.dm
+Copyright (c) 2026 ClickMinds.dm, for its original contributions only,
+to the extent copyright protection applies. These contributions are offered
+under the MIT license in LICENSE unless a file explicitly states otherwise.
+
+This is an independently maintained edition, not an official upstream service.
+No upstream copyright, trademark, domain, or hosted-service ownership is
+transferred by maintaining this fork. Third-party dependencies and assets
+remain subject to their own licenses. External API and hosting services are
+subject to their own service terms and charges.
