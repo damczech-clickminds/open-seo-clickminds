@@ -1,0 +1,122 @@
+name: ClickMinds upstream update
+
+on:
+  schedule:
+    - cron: "23 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clickminds-upstream-update
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.repository == 'damczech-clickminds/open-seo-clickminds'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: read
+    outputs:
+      changed: ${{ steps.candidate.outputs.changed }}
+      sha: ${{ steps.candidate.outputs.sha }}
+      branch: ${{ steps.candidate.outputs.branch }}
+      upstream: ${{ steps.candidate.outputs.upstream }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: clickminds/main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check for an existing update PR
+        id: existing
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = await github.paginate(github.rest.pulls.list, {
+              ...context.repo, state: 'open', base: 'clickminds/main', per_page: 100
+            });
+            const existing = prs.find(pr =>
+              pr.head.repo?.full_name === context.payload.repository.full_name &&
+              pr.head.ref.startsWith('update/clickminds-upstream-'));
+            core.setOutput('exists', existing ? 'true' : 'false');
+            if (existing) {
+              await core.summary.addRaw(`Review the existing update first: ${existing.html_url}`).write();
+            }
+      - name: Prepare candidate and check notices
+        id: candidate
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          CANDIDATE_BRANCH: update/clickminds-upstream-${{ github.run_id }}-${{ github.run_attempt }}
+        run: bash scripts/clickminds-upstream-candidate.sh
+      - name: Publish candidate branch
+        if: steps.candidate.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_BRANCH: ${{ steps.candidate.outputs.branch }}
+        run: |
+          header=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $header" push origin "HEAD:$CANDIDATE_BRANCH"
+
+  validate:
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      candidate_ref: ${{ needs.prepare.outputs.sha }}
+
+  report:
+    needs: [prepare, validate]
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - name: Publish exact-commit status and review PR
+        uses: actions/github-script@v7
+        env:
+          CANDIDATE_SHA: ${{ needs.prepare.outputs.sha }}
+          CANDIDATE_BRANCH: ${{ needs.prepare.outputs.branch }}
+          UPSTREAM_SHA: ${{ needs.prepare.outputs.upstream }}
+          VALIDATION_RESULT: ${{ needs.validate.result }}
+        with:
+          script: |
+            const sha = process.env.CANDIDATE_SHA;
+            const passed = process.env.VALIDATION_RESULT === 'success';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.repos.createCommitStatus({
+              ...context.repo, sha,
+              state: passed ? 'success' : 'failure',
+              context: 'ClickMinds / upstream quality',
+              description: passed ? 'CI passed; maintainer review still required' : 'Validation failed or was cancelled; do not merge',
+              target_url: runUrl
+            });
+            const body = [
+              '<!-- clickminds-upstream-update -->',
+              `Upstream commit: \`${process.env.UPSTREAM_SHA}\``,
+              `Validated candidate: \`${sha}\``,
+              '',
+              `**Validation: ${passed ? 'PASSED' : 'FAILED / INCOMPLETE'}** — [full checks and logs](${runUrl}).`,
+              '',
+              'Checks: unchanged LICENSE and ClickMinds NOTICE, formatting, dependency usage, types, lint, unit tests, worker build, website protection tests and build, Docker image build.',
+              '',
+              'Review the full diff, especially migrations, dependencies, authentication, billing, workflows and plugin endpoints. Passing CI does not establish production compatibility.',
+              'Before deploying: back up the instance, test migrations and user workflows in staging, and retain the previous image and database backup.',
+              'No automatic merge or deployment. If this PR is edited, rerun CI on the new head; this status covers only the candidate SHA above.'
+            ].join('\n');
+            const { data: pr } = await github.rest.pulls.create({
+              ...context.repo,
+              base: 'clickminds/main',
+              head: process.env.CANDIDATE_BRANCH,
+              title: `Update OpenSEO upstream (${process.env.UPSTREAM_SHA.slice(0, 12)})`,
+              body, draft: !passed
+            });
+            await core.summary.addLink(passed ? 'Update ready for review' : 'Blocked update: inspect failures', pr.html_url).write();

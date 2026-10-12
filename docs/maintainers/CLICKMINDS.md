@@ -7,7 +7,7 @@
 - Baseline release: `v0.1.12` (repository package version)
 - Review date: 2026-10-12
 - Downstream maintainer: ClickMinds.dm
-- Intended GitHub account: `damczech-clickminds`
+- GitHub account: `damczech-clickminds`
 
 The root LICENSE is MIT, with copyright © 2026 Ben Senescu. It permits use,
 modification, commercial use, distribution, sublicensing and sale, provided
@@ -26,7 +26,7 @@ DataForSEO, Cloudflare and other providers have separate terms and charges.
 ## Git layout
 
 - `upstream`: original every-app/open-seo repository; fetching only.
-- `origin`: the user's GitHub fork, once created and connected.
+- `origin`: https://github.com/damczech-clickminds/open-seo-clickminds.git
 - `main`: original baseline, reserved for upstream history.
 - `clickminds/main`: edition with ClickMinds changes, used for instance builds.
 
@@ -114,3 +114,42 @@ upstream through separate PRs when desired. A public GitHub fork publishes
 committed changes; keep private credentials, customer data and internal business
 material outside it. Keep the original project and contributor notices in all
 redistributed source or image packages.
+
+## Easy upstream updates
+
+After the automation PR is reviewed and merged, set `clickminds/main` as the
+repository default branch. GitHub schedules and manual workflow dispatch require
+the workflow on the default branch. Enable Actions for the fork and, in Actions
+settings, allow GitHub Actions to create pull requests. The workflow uses the
+built-in GITHUB_TOKEN; no personal token or provider keys are needed.
+
+Open **Actions → ClickMinds upstream update → Run workflow** for an on-demand
+check. It also checks every Monday at 06:23 UTC (07:23 Warsaw winter time,
+08:23 summer time). GitHub can delay schedules and disables schedules in public
+repositories after extended inactivity; the manual button remains the fallback.
+
+If upstream has no new commits, the run ends without a PR. If an update PR is
+already open, the run links it and waits for it to be merged or closed rather
+than opening duplicates. License changes and merge conflicts fail preparation
+and appear in the failed Actions run. Review these manually; no candidate is
+published. Closing a rejected update allows it to be proposed again on the next
+run; there is no permanent ignore list.
+
+A candidate is validated by the same reusable CI as normal pull requests, using
+its exact commit SHA. Successful validation creates a review PR; failure creates
+a draft PR with logs. The `ClickMinds / upstream quality` commit status refers to
+that SHA only. Tests run with a read-only token, without inherited deployment
+secrets; the separate reporting job has permission to create the PR and status.
+GITHUB_TOKEN-created PRs do not start ordinary PR workflows, so this workflow
+calls CI explicitly rather than relying on those events.
+
+Require the CI jobs and code-owner review in a branch ruleset before treating
+these checks as merge enforcement. This proposal does not configure a ruleset:
+without one, the repository owner can still merge failing PRs. CODEOWNERS names
+`@damczech-clickminds` as this fork's reviewer for control-plane and plugin files.
+No outside upstream maintainer is asked to administer the fork.
+
+Green checks mean the automated checks passed, not that every regression is
+excluded. Database migrations, external API compatibility and production data
+need staging verification. This workflow builds but does not start the Docker
+image or deploy to any instance. Keep the backup and rollback procedure above.

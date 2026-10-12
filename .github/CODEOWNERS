@@ -1,13 +1,13 @@
 # Request explicit maintainer review for review-control changes.
-/.github/ @bensenescu
-/AGENTS.md @bensenescu
-/.claude/CLAUDE.md @bensenescu
-/.agents/skills/ @bensenescu
-/docs/maintainers/review-guidelines.md @bensenescu
+/.github/ @damczech-clickminds
+/AGENTS.md @damczech-clickminds
+/.claude/CLAUDE.md @damczech-clickminds
+/.agents/skills/ @damczech-clickminds
+/docs/maintainers/review-guidelines.md @damczech-clickminds
 
 # Plugin distribution — these files define the MCP endpoint and skills
 # every plugin installer connects to; a silent change here ships to all
 # installed users on the next update.
-/plugins/ @bensenescu
-/.claude-plugin/ @bensenescu
-/.agents/plugins/ @bensenescu
+/plugins/ @damczech-clickminds
+/.claude-plugin/ @damczech-clickminds
+/.agents/plugins/ @damczech-clickminds
