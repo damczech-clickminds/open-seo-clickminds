@@ -80,6 +80,8 @@ export default defineConfig(({ mode, command }) => {
           })
         : null,
       cloudflare({
+        // Client database, objects and sessions live outside the source tree.
+        persistState: { path: "../Klienci/_app-state" },
         inspectorPort: false,
         viteEnvironment: { name: "ssr" },
         // The site-audit aux worker builds to dist/open_seo_audit/ and runs

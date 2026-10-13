@@ -157,8 +157,17 @@ this does not replace an integration test against a running Postgres instance.
 Live smoke tests do not contact paid providers. Live client correctness still
 requires configured GSC and a known real data case.
 
-SQLite local state lives under ignored `.wrangler/`; .env files and credentials
-are ignored. Back up this state privately while the app is stopped, or use a
-consistent SQLite backup. Do not commit it or add it to a source bundle. For
-Postgres, use normal database backup/restore procedures. Applying migrations is
-not a backup. No client-memory files from Ads Auditor were imported or published.
+The local Vite runtime persists SQLite databases, objects and sessions in
+`../Klienci/_app-state`, outside the source repository. On the migrated local
+installation, `.wrangler/state` is a symlink to the same directory, so Wrangler
+CLI commands and Vite use the same state. Preserve database identifiers and WAL
+files. Local cache and AuditScratchpad symlinks point into `../runtime` instead
+of durable client storage. These machine-local links are not tracked by Git.
+
+Keep the workspace outside iCloud Drive, Desktop and Documents. Git synchronizes
+application source; it does not synchronize client data. `.wrangler/`, .env files
+and credentials are ignored. Back up client state privately while the app is
+stopped, or use a consistent SQLite backup. Do not commit it or add it to a source
+bundle. For Postgres, use normal database backup/restore procedures. Applying
+migrations is not a backup. No client-memory files from Ads Auditor were imported
+or published.
