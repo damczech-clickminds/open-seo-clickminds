@@ -13,6 +13,9 @@ Use the pinned pnpm version from package.json. From the repository root:
 
 ```sh
 corepack pnpm install --frozen-lockfile
+# Fresh checkout only: make Wrangler CLI use the same external state as Vite.
+mkdir -p ../Klienci/_app-state .wrangler
+ln -s ../../Klienci/_app-state .wrangler/state
 corepack pnpm run db:migrate:local
 # .env.local: AUTH_MODE=local_noauth, PORT=3001
 corepack pnpm exec vite dev --host 127.0.0.1 --port 3001
@@ -43,6 +46,10 @@ spend cap: the UI and other MCP connections retain their normal capabilities.
 Enable additional operations explicitly when needed. Do not configure the full
 plugin MCP connection alongside this profile if you intend to keep its narrow
 tool surface; the plugin's server catalog is broader.
+
+If `.wrangler/state` already exists, preserve it and verify its target before
+running setup; do not overwrite or nest a link inside existing state. The
+migrated workspace already has the correct link.
 
 The fork's plugin `.mcp.json` also defaults to this loopback endpoint. Set a
 different endpoint explicitly for another secured instance. A client must reach
@@ -158,7 +165,11 @@ Live smoke tests do not contact paid providers. Live client correctness still
 requires configured GSC and a known real data case.
 
 The local Vite runtime persists SQLite databases, objects and sessions in
-`../Klienci/_app-state`, outside the source repository. On the migrated local
+`../Klienci/_app-state`, outside the source repository. Override this explicitly
+with `OPENSEO_LOCAL_STATE_DIR` when necessary. The Docker image sets it to
+`/app/.wrangler/state` to retain the existing persistent Compose volume and match
+Wrangler migrations; container state must not be moved into an unmounted path.
+On the migrated local
 installation, `.wrangler/state` is a symlink to the same directory, so Wrangler
 CLI commands and Vite use the same state. Preserve database identifiers and WAL
 files. Local cache and AuditScratchpad symlinks point into `../runtime` instead
