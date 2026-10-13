@@ -3,6 +3,8 @@ FROM node:22
 
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
+# Match Wrangler migrations and the persistent Compose volume.
+ENV OPENSEO_LOCAL_STATE_DIR=/app/.wrangler/state
 
 WORKDIR /app
 

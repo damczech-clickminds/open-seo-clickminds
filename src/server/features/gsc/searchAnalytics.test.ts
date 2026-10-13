@@ -64,6 +64,15 @@ describe("resolveDateRange", () => {
 });
 
 describe("buildSearchAnalyticsRequest", () => {
+  it("preserves explicit aggregate requests instead of returning the top query", () => {
+    expect(
+      buildSearchAnalyticsRequest({ projectId: "p1", dimensions: [] }, TODAY)
+        .dimensions,
+    ).toEqual([]);
+    expect(
+      buildSearchAnalyticsRequest({ projectId: "p1" }, TODAY).dimensions,
+    ).toEqual(["query"]);
+  });
   it("wraps flat filters into a single AND dimensionFilterGroup", () => {
     const request = buildSearchAnalyticsRequest(
       {

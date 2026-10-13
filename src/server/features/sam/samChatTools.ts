@@ -1,4 +1,17 @@
 import {
+  startAgentWorkTool,
+  getAgentWorkContextTool,
+  listAgentWorkTool,
+  checkpointAgentWorkTool,
+  compareOrganicPeriodsTool,
+  proposeLearningPatternTool,
+} from "@/server/mcp/tools/agent-work-tools";
+import {
+  listReportsTool,
+  getReportTool,
+  saveReportTool,
+} from "@/server/mcp/tools/report-tools";
+import {
   getAiVisibilityTrackerTool,
   generateAiVisibilityPromptsTool,
   researchAiVisibilityPromptsTool,
@@ -334,11 +347,10 @@ export function buildSamMcpTools(
   project: { id: string; domain: string | null },
   turnId?: string,
 ): ToolSet {
-  const projectId = project.id;
   const toolContext: ToolContext = { auth: authContext, turnId };
   const adaptTool = <Shape extends ZodRawShape>(
     definition: McpToolDefinition<Shape>,
-  ) => adaptMcpTool(definition, toolContext, projectId);
+  ) => adaptMcpTool(definition, toolContext, project.id);
 
   // The GA4 tools define inputSchema as a built ZodObject instead of a raw
   // shape; unwrap it so the same adapter (projectId stripping included) applies.
@@ -360,7 +372,7 @@ export function buildSamMcpTools(
         handler,
       },
       toolContext,
-      projectId,
+      project.id,
     );
   };
 
@@ -368,6 +380,15 @@ export function buildSamMcpTools(
   // discovering other projects isn't part of its job — every project-scoped tool
   // below has `projectId` injected server-side by adaptMcpTool.
   return {
+    start_seo_work: adaptObjectTool(startAgentWorkTool),
+    get_seo_work_context: adaptObjectTool(getAgentWorkContextTool),
+    list_seo_work: adaptObjectTool(listAgentWorkTool),
+    checkpoint_seo_work: adaptObjectTool(checkpointAgentWorkTool),
+    compare_organic_periods: adaptObjectTool(compareOrganicPeriodsTool),
+    propose_learning_pattern: adaptObjectTool(proposeLearningPatternTool),
+    list_reports: adaptTool(listReportsTool),
+    get_report: adaptTool(getReportTool),
+    save_report: adaptTool(saveReportTool),
     // On-demand product reference (kept out of the system prompt: inlining it
     // made the agent narrate hosted/self-hosted framing at signed-in users).
     get_product_info: tool({

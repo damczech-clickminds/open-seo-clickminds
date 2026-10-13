@@ -147,10 +147,9 @@ export function buildSearchAnalyticsRequest(
   const request: GscSearchAnalyticsRequest = {
     startDate,
     endDate,
-    dimensions:
-      input.dimensions && input.dimensions.length > 0
-        ? input.dimensions
-        : ["query"],
+    // Explicit [] requests property aggregates, including anonymized queries.
+    // Omitted dimensions retains the existing query-level default.
+    dimensions: input.dimensions ?? ["query"],
     rowLimit: clamp(
       input.rowLimit ?? GSC_DEFAULT_ROW_LIMIT,
       1,

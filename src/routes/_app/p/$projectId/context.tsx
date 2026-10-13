@@ -1,3 +1,4 @@
+import { AgentWorkPanel } from "@/client/features/agent-work/AgentWorkPanel";
 import { createFileRoute } from "@tanstack/react-router";
 import { ProjectPageHeader } from "@/client/features/projects/ProjectPageHeader";
 import { ProjectContextPage } from "@/client/features/projects/project-context/ProjectContextPage";
@@ -14,6 +15,7 @@ function ProjectContextRoute() {
         <ProjectPageHeader projectId={projectId} title="Context" />
 
         <ProjectContextPage projectId={projectId} />
+        <AgentWorkPanel key={projectId} projectId={projectId} />
       </div>
     </div>
   );

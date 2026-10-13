@@ -1,13 +1,13 @@
 {
   "name": "openseo",
-  "version": "1.0.21",
-  "description": "Research keywords and competitors, audit sites, track rankings and AI visibility, and use connected Search Console data from your AI assistant.",
+  "version": "1.0.22",
+  "description": "ClickMinds local OpenSEO: project-scoped agent work, bounded context, reviewed learning, private reports and SEO tools. Based on MIT-licensed OpenSEO.",
   "author": {
-    "name": "Every App, Inc",
-    "email": "support@openseo.so"
+    "name": "ClickMinds.dm",
+    "url": "https://github.com/damczech-clickminds/open-seo-clickminds"
   },
-  "homepage": "https://openseo.so",
-  "repository": "https://github.com/every-app/open-seo",
+  "homepage": "https://github.com/damczech-clickminds/open-seo-clickminds",
+  "repository": "https://github.com/damczech-clickminds/open-seo-clickminds",
   "license": "MIT",
   "keywords": [
     "seo",
