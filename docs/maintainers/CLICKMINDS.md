@@ -155,6 +155,7 @@ need staging verification. This workflow builds but does not start the Docker
 image or deploy to any instance. Keep the backup and rollback procedure above.
 
 ## New Mac / host contract
+
 Domain: independent SEO tooling. Canonical checkout:
 `~/ClickMinds-Workspace/40-tools/Open SEO/open-seo-clickminds`; origin above,
 accepted edition branch `clickminds/main`. Read current PROJECT_REGISTRY,
