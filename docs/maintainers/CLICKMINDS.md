@@ -153,3 +153,21 @@ Green checks mean the automated checks passed, not that every regression is
 excluded. Database migrations, external API compatibility and production data
 need staging verification. This workflow builds but does not start the Docker
 image or deploy to any instance. Keep the backup and rollback procedure above.
+
+## New Mac / host contract
+Domain: independent SEO tooling. Canonical checkout:
+`~/ClickMinds-Workspace/40-tools/Open SEO/open-seo-clickminds`; origin above,
+accepted edition branch `clickminds/main`. Read current PROJECT_REGISTRY,
+WORK_RUNTIME and Control Plane CURRENT; select each client's own PROJECT_OS only
+for an authorized client task. Apply neutral Codex instructions and this repo's
+AGENTS. Native capabilities: existing pnpm scripts, OpenSEO plugin skills/MCP;
+setup and validation commands remain those documented above and in package.json.
+Use pnpm 10.30.1, the supported Node prerequisite and the existing locked install,
+then `pnpm run ci:check` and `pnpm run test:ci` when reactivating development.
+Operational state is PAUSED: do not start server, providers, paid APIs, deployments
+or MCP automatically during host bootstrap. No Bridge dependency for ordinary SEO.
+Provider credentials and tenant data must be rebound through authorized native
+setup, never copied from an old Codex profile. Update via reviewed branch/PR and
+required CI within budget, then accepted edition main, scoped install and actual
+loaded acceptance. Existing update/backup/rollback instructions above own rollback;
+never overwrite state databases or bypass tenant boundaries to pass readiness.
